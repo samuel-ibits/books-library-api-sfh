@@ -1,16 +1,14 @@
-const mongoose = require("mongoose");
-const { MongoMemoryServer } = require("mongodb-memory-server");
+// test/utils/setup.js
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
 
-module.exports = async function setupTestEnvironment() {
+export default async function setupTestEnvironment() {
   const mongod = new MongoMemoryServer();
 
   const mongoUri = await mongod.getUri();
 
   before(async () => {
-    await mongoose.connect(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
   });
 
   beforeEach(async () => {
@@ -21,4 +19,4 @@ module.exports = async function setupTestEnvironment() {
     await mongoose.disconnect();
     await mongod.stop();
   });
-};
+}

@@ -1,11 +1,11 @@
 // admin-app.js
-const amqp = require("amqplib");
-const express = require("express");
-const bodyParser = require("body-parser");
-const db = require("./db");
-const User = require("./models/user");
-const Book = require("./models/book");
 
+import express from "express";
+import amqp from "amqplib";
+import bodyParser from "body-parser";
+import { connect } from "./db.js";
+import User from "./models/user.js";
+import Book from "./models/book.js";
 const adminApp = express();
 const PORT = 4000;
 

@@ -1,11 +1,12 @@
-const { expect } = require("chai");
-const request = require("supertest");
-const setupTestEnvironment = require("../utils/setup");
-const app = require("../../app"); // Update the path accordingly
-const User = require("../../models/user");
-const Book = require("../../models/book");
+// test/integration/client-api.test.js
+import { expect } from "chai";
+import request from "supertest";
+import setupTestEnvironment from "../utils/setup.js";
+import app from "../../app.js"; // Update the path accordingly
+// import User from "../../models/user.js";
+// import Book from "../../models/book.js";
 
-describe("Client API - Unit Tests", () => {
+describe("Client API - Integration Tests", () => {
   setupTestEnvironment();
 
   describe("POST /users", () => {
