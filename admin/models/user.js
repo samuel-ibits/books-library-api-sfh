@@ -1,5 +1,6 @@
 // models/user.js
 import mongoose from "mongoose";
+mongoose.set('useCreateIndex', true); // Optional, to suppress the deprecation warning
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true },

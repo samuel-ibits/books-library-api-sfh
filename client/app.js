@@ -1,4 +1,3 @@
-// app.js
 import express from "express";
 import amqp from "amqplib";
 import bodyParser from "body-parser";
@@ -6,7 +5,7 @@ import { connect } from "./db.js";
 import User from "./models/user.js";
 import Book from "./models/book.js";
 
-const app=express();
+const app = express();
 const PORT = 4001;
 
 app.use(bodyParser.json());
@@ -63,7 +62,7 @@ app.get("/books/:id", async (req, res) => {
 });
 
 // Filter books
-app.get("/books", async (req, res) => {
+app.get("/books/filter", async (req, res) => {
   const { publisher, category } = req.query;
   try {
     const filteredBooks = await Book.find({
@@ -105,48 +104,4 @@ app.post("/books/:id/borrow", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-// Enroll a user
-app.post("/users", async (req, res) => {
-  try {
-    const newUser = await User.create(req.body);
-    res.status(201).json(newUser);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// List all available books
-app.get("/books", async (req, res) => {
-  try {
-    const books = await Book.find({ isAvailable: true });
-    res.json(books);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// Get a single book by ID
-app.get("/books/:id", async (req, res) => {
-  try {
-    const book = await Book.findById(req.params.id);
-    res.json(book);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// Filter books
-app.get("/books", async (req, res) => {
-  const { publisher, category } = req.query;
-  try {
-    const filteredBooks = await Book.find({
-      publisher,
-      category,
-      isAvailable: true,
-    });
-    res.json(filteredBooks);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+export default app; 

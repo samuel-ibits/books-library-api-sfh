@@ -1,20 +1,15 @@
-// db.js
 import mongoose from "mongoose";
-
-const DB_URI = "mongodb://localhost:27017/library"; // Update with your MongoDB connection URI
 
 const connect = async () => {
   try {
-    await mongoose.connect(DB_URI, {
+    await mongoose.connect("mongodb://localhost:27017/your-database-name", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
+      useCreateIndex: true, // This is deprecated but still supported by Mongoose
     });
     console.log("Connected to MongoDB");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error.message);
-    process.exit(1); // Exit the process if connection fails
   }
 };
 
@@ -24,7 +19,6 @@ const disconnect = async () => {
     console.log("Disconnected from MongoDB");
   } catch (error) {
     console.error("Error disconnecting from MongoDB:", error.message);
-    process.exit(1); // Exit the process if disconnection fails
   }
 };
 

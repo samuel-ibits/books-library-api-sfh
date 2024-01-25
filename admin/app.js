@@ -12,6 +12,27 @@ const PORT = 4000;
 adminApp.use(bodyParser.json());
 
 
+async function sendUpdateMessage(action, data) {
+  try {
+    const connection = await amqp.connect("amqp://localhost");
+    const channel = await connection.createChannel();
+
+    const exchange = "libraryExchange";
+    const routingKey = "update";
+
+    await channel.assertExchange(exchange, "direct", { durable: false });
+    await channel.publish(
+      exchange,
+      routingKey,
+      Buffer.from(JSON.stringify({ action, data }))
+    );
+
+    console.log(`Sent update message: ${action}`);
+  } catch (error) {
+    console.error("Error sending update message:", error);
+  }
+}
+
 // Add a new book to the catalog
 adminApp.post('/admin/books', async (req, res) => {
   try {
@@ -26,33 +47,15 @@ adminApp.post('/admin/books', async (req, res) => {
   }
 });
 
-async function sendUpdateMessage(action, data) {
+// Remove a book from the catalog
+adminApp.delete("/admin/books/:id", async (req, res) => {
   try {
-    const connection = await amqp.connect('amqp://localhost');
-    const channel = await connection.createChannel();
+    const deletedBook = await Book.findByIdAndDelete(req.params.id);
 
-    const exchange = 'libraryExchange';
-    const routingKey = 'update';
+    // Notify Client API about the book removal
+    await sendUpdateMessage('bookRemoved', deletedBook);
 
-    await channel.assertExchange(exchange, 'direct', { durable: false });
-    await channel.publish(exchange, routingKey, Buffer.from(JSON.stringify({ action, data })));
-
-    console.log(`Sent update message: ${action}`);
-  } catch (error) {
-    console.error('Error sending update message:', error);
-  }
-}
-
-
-
-// Add a new book to the catalog
-adminApp.post("/admin/books", async (req, res) => {
-  try {
-    const newBook = await Book.create(req.body);
-
-    // Notify Client API about the new book (using a message broker or WebSocket)
-
-    res.status(201).json(newBook);
+    res.json(deletedBook);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -118,3 +121,4 @@ adminApp.get("/admin/books/not-available", async (req, res) => {
 adminApp.listen(PORT, () => {
   console.log(`Admin API is running on http://localhost:${PORT}`);
 });
+export default adminApp; 

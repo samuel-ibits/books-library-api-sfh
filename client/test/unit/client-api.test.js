@@ -3,8 +3,8 @@ import { expect } from "chai";
 import request from "supertest";
 import setupTestEnvironment from "../utils/setup.js";
 import app from "../../app.js"; // Update the path accordingly
-// import User from "../../models/user.js";
-// import Book from "../../models/book.js";
+import User from "../../models/user.js";
+import Book from "../../models/book.js";
 
 describe("Client API - Unit Tests", () => {
   setupTestEnvironment();
@@ -25,5 +25,14 @@ describe("Client API - Unit Tests", () => {
     });
   });
 
-  // Add similar tests for other endpoints (GET /books, GET /books/:id, etc.)
+  describe("GET /books", () => {
+    it("should list all available books", async () => {
+      // Assuming you have some sample books in your database
+      // If not, you can create them before running this test
+      const response = await request(app).get("/books");
+
+      expect(response.status).to.equal(200);
+      // Add more assertions based on your actual data
+    });
+  });
 });
